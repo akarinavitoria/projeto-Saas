@@ -12,6 +12,8 @@ app = create_app()  # Chama a função `create_app` que vai configurar o Flask, 
 # Rota de Login (gera o token JWT)
 @app.route('/api/login', methods=['POST'])
 def login():
+    # lógica de login
+
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -22,6 +24,7 @@ def login():
         return jsonify(token=access_token), 200
     else:
         return jsonify(error="Credenciais inválidas"), 401
+
 
 # Rota para criar treino (exige autenticação JWT)
 @app.route('/api/workouts/create', methods=['POST'])
@@ -51,7 +54,8 @@ def get_workouts(user_id):
 
 # Configuração para iniciar o aplicativo
 if __name__ == '__main__':
-    app.run(debug=True)
+ app.run(debug=True, host='localhost', port=5000)
+
 
 
 
