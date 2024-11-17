@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
-# Definição da classe de configuração
+# Configuração do aplicativo
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'sua_chave_secreta_aqui')
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///saas.db')
@@ -25,7 +25,7 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-# Classe User para modelar os usuários
+# Classe User
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +39,7 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-# Classe Workout para modelar os treinos
+# Classe Workout
 class Workout(db.Model):
     __tablename__ = 'workouts'
     id = db.Column(db.Integer, primary_key=True)
@@ -48,18 +48,119 @@ class Workout(db.Model):
     duration = db.Column(db.String(50), nullable=False)
     date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
 
-# Função para inicializar o banco de dados, caso ainda não exista
+# Rota: Registro de Usuário
+@app.route('/api/register', methods=['POST'])
+def register():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email or not password:
+            return jsonify({'error': 'Email e senha são obrigatórios.'}), 400
+
+        if User.query.filter_by(email=email).first():
+            return jsonify({'error': 'Usuário já cadastrado.'}), 400
+
+        new_user = User(email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({'message': 'Usuário registrado com sucesso!'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Rota: Login de Usuário
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email or not password:
+            return jsonify({'error': 'Email e senha são obrigatórios.'}), 400
+
+        user = User.query.filter_by(email=email).first()
+
+        if not user or not user.check_password(password):
+            return jsonify({'error': 'Credenciais inválidas.'}), 401
+
+        access_token = create_access_token(identity=user.id)
+        return jsonify({'access_token': access_token}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Rota: Criar Treino
+@app.route('/api/workouts/create', methods=['POST'])
+@jwt_required()
+def create_workout():
+    try:
+        current_user_id = get_jwt_identity()
+        data = request.get_json()
+
+        name = data.get('name')
+        duration = data.get('duration')
+        date = data.get('date')
+
+        if not name or not duration or not date:
+            return jsonify({'error': 'Nome, duração e data são obrigatórios.'}), 400
+
+        new_workout = Workout(
+            user_id=current_user_id,
+            name=name,
+            duration=duration,
+            date=datetime.strptime(date, '%Y-%m-%d')
+        )
+
+        db.session.add(new_workout)
+        db.session.commit()
+
+        return jsonify({'message': 'Treino criado com sucesso!'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Rota: Listar Treinos
+@app.route('/api/workouts', methods=['GET'])
+@jwt_required()
+def list_workouts():
+    try:
+        current_user_id = get_jwt_identity()
+        workouts = Workout.query.filter_by(user_id=current_user_id).all()
+
+        workout_list = [
+            {
+                'id': workout.id,
+                'name': workout.name,
+                'duration': workout.duration,
+                'date': workout.date.strftime('%Y-%m-%d')
+            }
+            for workout in workouts
+        ]
+
+        return jsonify(workout_list), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Inicializar banco de dados
 def initialize_database():
     if not os.path.exists('saas.db'):
         with app.app_context():
             db.create_all()
             print("Banco de dados criado.")
 
-# Inicialização do aplicativo
+# Inicialização
 if __name__ == '__main__':
-    print("Inicializando a aplicação...")  # Mensagem de debug para verificar inicialização
+    print("Rotas disponíveis:")
+    for rule in app.url_map.iter_rules():
+        print(f"{rule.methods} {rule}")
     initialize_database()
     app.run(debug=True)
+
+
+
+
 
 
 
