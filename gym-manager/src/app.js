@@ -1,17 +1,12 @@
+// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
-import WorkoutList from './pages/WorkoutList';
 
-const App = () => {
+function App() {
   return (
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<WorkoutList />} />
-      </Routes>
-    </Router>
+    <div>
+      <h1>Bem-vindo ao Gym Manager!</h1>
+    </div>
   );
-};
+}
 
 export default App;
