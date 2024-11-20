@@ -1,162 +1,92 @@
-import os
 from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import (
-    JWTManager, create_access_token,
-    jwt_required, get_jwt_identity
-)
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
-from dotenv import load_dotenv
-
-# Carregar variáveis de ambiente do arquivo .env
-load_dotenv()
-
-# Configuração do aplicativo
-class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'sua_chave_secreta_aqui')
-    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///saas.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'sua_jwt_chave_secreta_aqui')
+from flask_cors import CORS
 
 app = Flask(__name__)
-app.config.from_object(Config)
 
-db = SQLAlchemy(app)
-jwt = JWTManager(app)
+# Ativando o CORS para permitir conexões do frontend
+CORS(app)
 
-# Classe User
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    workouts = db.relationship('Workout', backref='user', lazy=True)
+# Dados fictícios para treinos (você pode substituir por um banco de dados no futuro)
+workouts = [
+    {
+        "id": 1,
+        "name": "Treino de Peito",
+        "duration": 60,  # Duração em minutos
+        "date": "2024-11-20"  # Data no formato YYYY-MM-DD
+    },
+    {
+        "id": 2,
+        "name": "Treino de Pernas",
+        "duration": 45,
+        "date": "2024-11-19"
+    },
+    {
+        "id": 3,
+        "name": "Treino de Costas",
+        "duration": 50,
+        "date": "2024-11-18"
+    }
+]
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-# Classe Workout
-class Workout(db.Model):
-    __tablename__ = 'workouts'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    duration = db.Column(db.String(50), nullable=False)
-    date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
-
-# Rota: Registro de Usuário
-@app.route('/api/register', methods=['POST'])
-def register():
-    try:
-        data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
-
-        if not email or not password:
-            return jsonify({'error': 'Email e senha são obrigatórios.'}), 400
-
-        if User.query.filter_by(email=email).first():
-            return jsonify({'error': 'Usuário já cadastrado.'}), 400
-
-        new_user = User(email=email)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        return jsonify({'message': 'Usuário registrado com sucesso!'}), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Rota: Login de Usuário
-@app.route('/api/login', methods=['POST'])
-def login():
-    try:
-        data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
-
-        if not email or not password:
-            return jsonify({'error': 'Email e senha são obrigatórios.'}), 400
-
-        user = User.query.filter_by(email=email).first()
-
-        if not user or not user.check_password(password):
-            return jsonify({'error': 'Credenciais inválidas.'}), 401
-
-        access_token = create_access_token(identity=user.id)
-        return jsonify({'access_token': access_token}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Rota: Criar Treino
-@app.route('/api/workouts/create', methods=['POST'])
-@jwt_required()
-def create_workout():
-    try:
-        current_user_id = get_jwt_identity()
-        data = request.get_json()
-
-        name = data.get('name')
-        duration = data.get('duration')
-        date = data.get('date')
-
-        if not name or not duration or not date:
-            return jsonify({'error': 'Nome, duração e data são obrigatórios.'}), 400
-
-        new_workout = Workout(
-            user_id=current_user_id,
-            name=name,
-            duration=duration,
-            date=datetime.strptime(date, '%Y-%m-%d')
-        )
-
-        db.session.add(new_workout)
-        db.session.commit()
-
-        return jsonify({'message': 'Treino criado com sucesso!'}), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Rota: Listar Treinos
+# Rota para listar todos os treinos
 @app.route('/api/workouts', methods=['GET'])
-@jwt_required()
-def list_workouts():
+def get_workouts():
+    return jsonify(workouts), 200
+
+# Rota para adicionar um novo treino
+@app.route('/api/workouts', methods=['POST'])
+def add_workout():
     try:
-        current_user_id = get_jwt_identity()
-        workouts = Workout.query.filter_by(user_id=current_user_id).all()
+        new_workout = request.json  # Obtém o JSON do corpo da requisição
+        if not new_workout.get("name") or not new_workout.get("duration") or not new_workout.get("date"):
+            return jsonify({"error": "Os campos 'name', 'duration' e 'date' são obrigatórios."}), 400
 
-        workout_list = [
-            {
-                'id': workout.id,
-                'name': workout.name,
-                'duration': workout.duration,
-                'date': workout.date.strftime('%Y-%m-%d')
-            }
-            for workout in workouts
-        ]
-
-        return jsonify(workout_list), 200
+        # Cria um novo ID automaticamente
+        new_workout["id"] = len(workouts) + 1
+        workouts.append(new_workout)
+        return jsonify(new_workout), 201  # Retorna o treino criado
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": f"Erro ao adicionar treino: {str(e)}"}), 500
 
-# Inicializar banco de dados
-def initialize_database():
-    if not os.path.exists('saas.db'):
-        with app.app_context():
-            db.create_all()
-            print("Banco de dados criado.")
+# Rota para obter um treino específico pelo ID
+@app.route('/api/workouts/<int:workout_id>', methods=['GET'])
+def get_workout_by_id(workout_id):
+    workout = next((w for w in workouts if w["id"] == workout_id), None)
+    if workout:
+        return jsonify(workout), 200
+    return jsonify({"error": "Treino não encontrado."}), 404
 
-# Inicialização
+# Rota para deletar um treino pelo ID
+@app.route('/api/workouts/<int:workout_id>', methods=['DELETE'])
+def delete_workout(workout_id):
+    global workouts
+    workouts = [w for w in workouts if w["id"] != workout_id]
+    return jsonify({"message": "Treino removido com sucesso."}), 200
+
+# Rota para atualizar um treino pelo ID
+@app.route('/api/workouts/<int:workout_id>', methods=['PUT'])
+def update_workout(workout_id):
+    try:
+        updated_data = request.json
+        workout = next((w for w in workouts if w["id"] == workout_id), None)
+        if not workout:
+            return jsonify({"error": "Treino não encontrado."}), 404
+
+        # Atualiza apenas os campos fornecidos
+        workout.update(updated_data)
+        return jsonify(workout), 200
+    except Exception as e:
+        return jsonify({"error": f"Erro ao atualizar treino: {str(e)}"}), 500
+
+# Rota inicial para verificar se o servidor está rodando
+@app.route('/')
+def home():
+    return jsonify({"message": "API do Gym Manager está rodando!"}), 200
+
 if __name__ == '__main__':
-    print("Rotas disponíveis:")
-    for rule in app.url_map.iter_rules():
-        print(f"{rule.methods} {rule}")
-    initialize_database()
-    app.run(debug=True)
+    # Use debug=True apenas em desenvolvimento. Em produção, use um servidor WSGI.
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
 
 
 
