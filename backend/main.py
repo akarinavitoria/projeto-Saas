@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -83,14 +82,6 @@ def update_workout(workout_id):
 @app.route('/')
 def home():
     return jsonify({"message": "API do Gym Manager está rodando!"}), 200
-
-@app.route('/api/clients', methods=['GET'])
-def get_clients():
-    clients = [
-        {'id': 1, 'name': 'Ana Silva', 'email': 'ana@gmail.com'},
-        {'id': 2, 'name': 'Carlos Santos', 'email': 'carlos@gmail.com'}
-    ]
-    return jsonify(clients)
 
 if __name__ == '__main__':
     # Use debug=True apenas em desenvolvimento. Em produção, use um servidor WSGI.
