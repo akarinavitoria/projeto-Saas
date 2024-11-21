@@ -1,12 +1,19 @@
 // src/App.js
 import React from 'react';
+import Header from './components/header/header.js';
+import clientsList from './pages/clients/clientsList.js';
+import './styles/global.css'; // Certifique-se de criar e configurar este arquivo global de estilos.
 
 function App() {
   return (
-    <div>
-      <h1>Bem-vindo ao Gym Manager!</h1>
-    </div>
+    <>
+      <Header />
+      <main>
+        <clientsList/>
+      </main>
+    </>
   );
 }
 
 export default App;
+
