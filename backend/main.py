@@ -3,6 +3,21 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
+clients = []
+@app.route('/api/clients', methods=['POST'])
+def add_client():
+    try:
+        new_client = request.json
+        if not new_client.get("name") or not new_client.get("email"):
+            return jsonify({"error": "Os campos 'name' e 'email' são obrigatórios."}), 400
+
+        # Cria um novo ID automaticamente
+        new_client["id"] = len(clients) + 1
+        clients.append(new_client)
+        return jsonify(new_client), 201
+    except Exception as e:
+        return jsonify({"error": f"Erro ao adicionar cliente: {str(e)}"}), 500
+
 # Ativando o CORS para permitir conexões do frontend
 CORS(app)
 
