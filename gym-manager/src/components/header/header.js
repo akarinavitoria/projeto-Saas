@@ -1,11 +1,13 @@
 import React from 'react';
+import './Header.css';
 
-const Header = () => {
+function Header() {
   return (
-    <header style={{ padding: '1rem', backgroundColor: '#f4f4f4', textAlign: 'center' }}>
+    <header className="header">
       <h1>Gym Manager</h1>
     </header>
   );
-};
+}
 
 export default Header;
+

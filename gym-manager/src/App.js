@@ -1,12 +1,15 @@
 // src/App.js
 import React from 'react';
+import Header from './components/Header/Header';
 
 function App() {
   return (
-    <div>
-      <h1>Bem-vindo ao Gym Manager!</h1>
-    </div>
+    <>
+      <Header />
+      {/* Conteúdo principal será renderizado aqui */}
+    </>
   );
 }
 
 export default App;
+
