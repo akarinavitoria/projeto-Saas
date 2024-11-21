@@ -1,7 +1,7 @@
 // src/App.js
 import React from 'react';
-import Header from './components/header/header.js';
-import clientsList from './pages/clients/clientsList.js';
+import Header from './components/header/heade';
+import ClientsList from './pages/clients/clientsList';
 import './styles/global.css'; // Certifique-se de criar e configurar este arquivo global de estilos.
 
 function App() {
