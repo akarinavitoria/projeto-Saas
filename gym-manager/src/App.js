@@ -1,7 +1,6 @@
-// src/App.js
 import React from 'react';
-import Header from './components/header/heade';
-import ClientsList from './pages/clients/clientsList';
+import Header from './components/Header/Header';
+import ClientsList from './pages/Clients/ClientsList';
 import './styles/global.css'; // Certifique-se de criar e configurar este arquivo global de estilos.
 
 function App() {
@@ -9,11 +8,12 @@ function App() {
     <>
       <Header />
       <main>
-        <clientsList/>
+        <ClientsList />
       </main>
     </>
   );
 }
 
 export default App;
+
 
