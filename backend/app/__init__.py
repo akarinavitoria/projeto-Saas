@@ -1,30 +1,14 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_cors import CORS
-
-# Inicializando as extensões
-db = SQLAlchemy()
-jwt = JWTManager()
+from .database import init_db
+from .routes import clients, gyms, professionals
 
 def create_app():
     app = Flask(__name__)
+    init_db(app)
 
-    # Configuração do banco de dados
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    # Configuração do JWT
-    app.config['JWT_SECRET_KEY'] = 'sua-chave-secreta'
-
-    # Inicializando as extensões
-    db.init_app(app)
-    jwt.init_app(app)
-    CORS(app)
-
-    # Registrando rotas diretamente ou por meio de blueprint
-    from .routes import main_bp
-    app.register_blueprint(main_bp)
+    # Registrar Blueprints para as rotas
+    app.register_blueprint(clients.bp)
+    app.register_blueprint(gyms.bp)
+    app.register_blueprint(professionals.bp)
 
     return app
-
