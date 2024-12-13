@@ -42,11 +42,6 @@ def add_client():
     except Exception as e:
         return jsonify({"error": f"Erro ao adicionar cliente: {str(e)}"}), 500
 
-@app.route('/')
-def home():
-    return jsonify({"message": "API do projeto de academias está rodando!"}), 200
-
-
 # Rota inicial
 @app.route('/')
 def home():
