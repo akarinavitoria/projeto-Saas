@@ -6,11 +6,11 @@ import './styles/global.css';
 function App() {
   return (
     <div>
-      <Header />
-      <ClientsList />
+      <h1>Bem-vindo ao Sistema de Avaliação de Academias!</h1>
     </div>
   );
 }
+
 
 export default App;
 
