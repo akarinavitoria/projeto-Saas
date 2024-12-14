@@ -1,7 +1,6 @@
 from flask import Flask
 from app.database import init_db
-from app.routes import home_bp
-from app.routes import gyms_bp, registrations_bp, payments_bp, search_bp
+from app.routes import home_bp, gyms_bp, registrations_bp, payments_bp, search_bp
 
 def create_app():
     app = Flask(__name__)
