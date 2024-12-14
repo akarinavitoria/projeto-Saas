@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, request
-from app.database import db
+from flask import Blueprint, request, jsonify
 from app.models import Payment
+from app.database import db
 
 bp = Blueprint("payments", __name__, url_prefix="/api/payments")
 

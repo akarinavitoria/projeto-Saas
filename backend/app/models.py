@@ -45,3 +45,12 @@ class Registration(db.Model):
 
     def __repr__(self):
         return f"<Registration {self.id}>"
+   
+    # Modelo de Pagamentos
+    class Payment(db.Model): id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    payment_date = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return f"<Payment {self.id}>"
