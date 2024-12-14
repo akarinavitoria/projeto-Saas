@@ -12,3 +12,4 @@ def create_app():
     app.register_blueprint(professionals.bp)
 
     return app
+

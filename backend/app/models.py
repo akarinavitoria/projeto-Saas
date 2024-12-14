@@ -19,7 +19,7 @@ class Client(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
 
 # Modelo de Profissional
-class Professional(db.Model):
+class Professionals(db.Model):
     __tablename__ = 'professionals'
 
     id = db.Column(db.Integer, primary_key=True)
