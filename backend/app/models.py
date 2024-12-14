@@ -47,9 +47,9 @@ class Registration(db.Model):
         return f"<Registration {self.id}>"
    
     # Modelo de Pagamentos
-    class Payment(db.Model):
-        __tablename__ = 'payments'
-        
+class Payment(db.Model):
+    __tablename__ = 'payments'
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     amount = db.Column(db.Float, nullable=False)
