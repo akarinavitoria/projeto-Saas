@@ -4,9 +4,9 @@ from .registrations import bp as registrations_bp
 from .payments import bp as payments_bp
 from .search import bp as search_bp
 
-bp = Blueprint('home', __name__)
+home_bp = Blueprint('home', __name__)
 
-@bp.route('/')
+@home_bp.route('/')
 def index():
     return {"message": "Bem-vindo ao sistema de avaliação de academias!"}
 
