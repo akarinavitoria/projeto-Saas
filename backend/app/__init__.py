@@ -10,6 +10,7 @@ def create_app():
     init_db(app)
 
     # Registrar blueprints
+    app.register_blueprint(home_bp)
     app.register_blueprint(gyms_bp)
     app.register_blueprint(registrations_bp)
     app.register_blueprint(payments_bp)
