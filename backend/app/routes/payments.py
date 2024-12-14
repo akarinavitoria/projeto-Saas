@@ -4,6 +4,7 @@ from app.database import db
 
 bp = Blueprint("payments", __name__, url_prefix="/api/payments")
 
+
 # Listar todos os pagamentos
 @bp.route("/", methods=["GET"])
 def list_payments():
