@@ -35,3 +35,13 @@ class Plan(db.Model):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     gym_id = db.Column(db.Integer, db.ForeignKey('gyms.id'), nullable=False)
+
+# Modelo de Registro 
+class Registration(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    gym_id = db.Column(db.Integer, nullable=False)
+    plan = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return f"<Registration {self.id}>"
