@@ -1,16 +1,16 @@
-// src/components/MapScreen.js
 import React from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { StyleSheet, View } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import { MAPBOX_ACCESS_TOKEN } from '@env';
+
+// Defina o token de acesso
+MapboxGL.setAccessToken('YOUR_MAPBOX_ACCESS_TOKEN');
 
 const MapScreen = () => {
   return (
     <View style={styles.container}>
       <MapboxGL.MapView style={styles.map}>
         <MapboxGL.Camera
-          zoomLevel={8}
+          zoomLevel={12}
           centerCoordinate={[-122.4324, 37.78825]}
         />
         <MapboxGL.PointAnnotation
@@ -30,7 +30,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
 export default MapScreen;
