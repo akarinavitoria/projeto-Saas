@@ -2,6 +2,8 @@
 import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import { MAPBOX_ACCESS_TOKEN } from '@env';
 
 const MapScreen = () => {
   return (
@@ -28,5 +30,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
 export default MapScreen;
