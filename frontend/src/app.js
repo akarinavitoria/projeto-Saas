@@ -6,6 +6,7 @@ import PaymentsPage from './components/PaymentsPage';
 import SearchPage from './components/SearchPage';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
+import MapScreen from './components/MapScreen';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/payments" element={<PaymentsPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/map" element={<MapScreen />} />
       </Routes>
     </Router>
   );
