@@ -4,8 +4,8 @@ import HomePage from './components/HomePage';
 import RegistrationPage from './components/RegistrationPage';
 import PaymentsPage from './components/PaymentsPage';
 import SearchPage from './components/SearchPage';
+import { AuthProvider } from './context/AuthContext';
 import './App.css';
-
 
 function App() {
   return (
@@ -17,6 +17,16 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
       </Routes>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <div className="App">
+        {/* Navegação e componentes */}
+      </div>
+    </AuthProvider>
   );
 }
 
