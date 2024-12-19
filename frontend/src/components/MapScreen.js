@@ -1,25 +1,26 @@
 // src/components/MapScreen.js
-import React, { useState } from 'react';
+import React from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '500px'
+};
+
+const center = {
+  lat: -23.55052,
+  lng: -46.633308
+};
 
 function MapScreen() {
-  const [route, setRoute] = useState([]);
-
-  const handleStartRoute = () => {
-    // Lógica para começar a registrar a rota
-  };
-
-  const handleStopRoute = () => {
-    // Lógica para parar o registro e salvar a rota
-  };
-
   return (
-    <div>
-      <h1>Mapeamento de Rotas</h1>
-      <button onClick={handleStartRoute}>Iniciar Rota</button>
-      <button onClick={handleStopRoute}>Finalizar Rota</button>
-      <div id="map" style={{ width: '100%', height: '500px' }}></div>
-    </div>
+    <LoadScript googleMapsApiKey="SUA_API_KEY">
+      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={15}>
+        <Marker position={center} />
+      </GoogleMap>
+    </LoadScript>
   );
 }
 
 export default MapScreen;
+
