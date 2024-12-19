@@ -1,0 +1,4 @@
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Your location is used to show your position on the map.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Your location is used to show your position on the map.</string>
