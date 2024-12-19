@@ -1,0 +1,13 @@
+android {
+    namespace "com.seuprojeto"
+
+    compileSdkVersion 34
+
+    defaultConfig {
+        applicationId "com.seuprojeto"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+    }
+}
