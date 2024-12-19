@@ -1,39 +1,21 @@
 {
-  "name": "projeto-saas",
+  "name": "seu-projeto",
   "version": "1.0.0",
-  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "jest"
+  },
   "dependencies": {
-    "@react-google-maps/api": "^2.20.3",
-    "@react-native-mapbox-gl/maps": "^8.5.0",
-    "@react-native-community/cli": "^11.0.0",
-    "axios": "^1.7.9",
-    "jwt-decode": "^4.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^7.0.2",
-    "react-scripts": "5.0.1"
+    "react": "18.2.0",
+    "react-native": "0.76.5"
   },
   "devDependencies": {
     "@react-native-community/cli": "latest"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
+
 
 
