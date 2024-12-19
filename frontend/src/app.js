@@ -4,6 +4,8 @@ import HomePage from './components/HomePage';
 import RegistrationPage from './components/RegistrationPage';
 import PaymentsPage from './components/PaymentsPage';
 import SearchPage from './components/SearchPage';
+import './App.css';
+
 
 function App() {
   return (

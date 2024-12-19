@@ -1,16 +1,27 @@
 // src/components/HomePage.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function HomePage() {
+  const [gyms, setGyms] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/gyms')
+      .then(response => setGyms(response.data))
+      .catch(error => console.error('Erro ao buscar academias:', error));
+  }, []);
+
   return (
     <div>
       <h1>Lista de Academias</h1>
-      <Link to="/register">Fazer Inscrição</Link>
-      <Link to="/payments">Ir para Pagamentos</Link>
-      <Link to="/search">Buscar Academias</Link>
+      <ul>
+        {gyms.map(gym => (
+          <li key={gym.id}>{gym.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }
 
 export default HomePage;
+
