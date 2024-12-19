@@ -1,26 +1,32 @@
 // src/components/MapScreen.js
 import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import MapboxGL from '@react-native-mapbox-gl/maps';
 
-const mapContainerStyle = {
-  width: '100%',
-  height: '500px'
-};
-
-const center = {
-  lat: -23.55052,
-  lng: -46.633308
-};
-
-function MapScreen() {
+const MapScreen = () => {
   return (
-    <LoadScript googleMapsApiKey="SUA_API_KEY">
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={15}>
-        <Marker position={center} />
-      </GoogleMap>
-    </LoadScript>
+    <View style={styles.container}>
+      <MapboxGL.MapView style={styles.map}>
+        <MapboxGL.Camera
+          zoomLevel={8}
+          centerCoordinate={[-122.4324, 37.78825]}
+        />
+        <MapboxGL.PointAnnotation
+          id="marker"
+          coordinate={[-122.4324, 37.78825]}
+        />
+      </MapboxGL.MapView>
+    </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    flex: 1,
+  },
+});
 
 export default MapScreen;
-
