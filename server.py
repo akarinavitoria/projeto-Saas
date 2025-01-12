@@ -1,31 +1,47 @@
-from flask import Flask, jsonify, request
-from groq_module import gerar_cardapio
+from flask import Flask, request, jsonify
+from osm_module import get_osm_data
 from openai_module import gerar_analise_de_treino
-from gmaps_module import get_gmap_data
-import os
+from groq_module import gerar_cardapio
 
 app = Flask(__name__)
 
-@app.route('/academias', methods=['GET'])
-def listar_academias():
-    """Rota para listar academias usando dados do Google Maps"""
-    query = request.args.get('query', 'academia perto de mim')
-    academias = get_gmap_data(query)
-    return jsonify(academias)
+@app.route("/localizacao", methods=["GET"])
+def localizacao():
+    """
+    Endpoint para buscar informacoes de uma localizacao usando OSM.
+    Params:
+        query (str): Nome ou endereco da localizacao.
+    Returns:
+        JSON: Dados formatados sobre a localizacao.
+    """
+    query = request.args.get("query")
+    if not query:
+        return jsonify({"error": "Parâmetro 'query' é obrigatório."}), 400
 
-@app.route('/analise', methods=['POST'])
-def analise_treino():
-    """Gera análise personalizada de treino"""
-    dados_treino = request.json
-    analise = gerar_analise_de_treino(dados_treino)
-    return jsonify(analise)
+    data = get_osm_data(query)
+    return jsonify(data)
 
-@app.route('/cardapio', methods=['GET'])
+@app.route("/analise", methods=["POST"])
+def analise():
+    """
+    Endpoint para gerar uma analise de treino usando OpenAI.
+    """
+    body = request.get_json()
+    treino = body.get("treino")
+
+    if not treino:
+        return jsonify({"error": "Treino não especificado."}), 400
+
+    analise = gerar_analise_de_treino(treino)
+    return jsonify({"analise": analise})
+
+@app.route("/cardapio", methods=["GET"])
 def cardapio():
-    """Retorna cardápio gerado pelo Groq"""
-    cardapio = gerar_cardapio()
-    return jsonify(cardapio)
+    """
+    Endpoint para gerar cardapio usando o modulo groq.
+    """
+    return jsonify({"cardapio": gerar_cardapio()})
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    app.run(debug=True)
+
